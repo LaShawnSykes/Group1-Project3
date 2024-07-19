@@ -1,3 +1,8 @@
+![News](https://s36667.pcdn.co/wp-content/uploads/2020/12/News-cycle-GIF-747x400-B.gif)
+
+
+
+
 # Group1-Project3
 
 Requirements
