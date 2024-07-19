@@ -1,4 +1,5 @@
 ![News](https://s36667.pcdn.co/wp-content/uploads/2020/12/News-cycle-GIF-747x400-B.gif)
+![Good News](https://media.tenor.com/0oMWmMLQ9zMAAAAC/good-news.gif)
 
 
 
