@@ -116,11 +116,6 @@ Open the `News_Summarizer.ipynb` file and run all cells.
 - nltk
 - beautifulsoup4
 
-## Contributing
-
-Contributions, issues, and feature requests are welcome. Feel free to check [issues page](https://github.com/yourusername/news-summarizer/issues) if you want to contribute.
-
-
 ## Acknowledgements
 
 - [NewsAPI](https://newsapi.org/) for providing access to diverse news sources
