@@ -59,7 +59,7 @@ MEDIASTACK_KEY=your_mediastack_key_here
 1. Run the Jupyter notebook:
   jupyter notebook
 
-2. Open the `News_Summarizer.ipynb` file.
+2. Open the `News_Summarizer.ipynb`<update this to the correct file name> file.
 
 3. Run all cells in the notebook.
 
@@ -100,7 +100,7 @@ MEDIASTACK_KEY=your_mediastack_key_here
 
 ## Contributing
 
-Contributions, issues, and feature requests are welcome. Feel free to check [issues page](insert our github link) if you want to contribute.
+Contributions, issues, and feature requests are welcome. Feel free to check [issues page](<insert our github link>) if you want to contribute.
 
 ## License
 
