@@ -1,4 +1,4 @@
-![News](https://s36667.pcdn.co/wp-content/uploads/2020/12/News-cycle-GIF-747x400-B.gif)
+
 ![Good News](https://media.tenor.com/0oMWmMLQ9zMAAAAC/good-news.gif)
 
 # Group1-Project3
@@ -126,6 +126,7 @@ Open the `News_Summarizer.ipynb` file and run all cells.
 - [Reuters News API](https://www.reuters.com/news-api/) Delivers trusted, timely, and comprehensive news from around the world.
 - [MediaStack API](https://mediastack.com/) Access live news and historical articles from a wide range of sources with a fast and simple API.
 - [ContextualWeb News API](https://rapidapi.com/contextualwebsearch/api/websearch) Fetch timely news articles from thousands of sources globally.
+![News](https://s36667.pcdn.co/wp-content/uploads/2020/12/News-cycle-GIF-747x400-B.gif)
   
 
 
