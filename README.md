@@ -44,7 +44,7 @@ Key features implemented:(needs update)
 ## Installation
 
 1. Clone this repository:
-   git clone (https://github.com/LaShawnSykes/Group1-Project3)
+   git clone [Neural Newsroom](https://bit.ly/neural-newsroom)
 cd news-summarizer
 
 2. Install the required packages:
