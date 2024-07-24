@@ -1,15 +1,16 @@
-![News](https://s36667.pcdn.co/wp-content/uploads/2020/12/News-cycle-GIF-747x400-B.gif)
-![Good News](https://media.tenor.com/0oMWmMLQ9zMAAAAC/good-news.gif)
 
-# Group1-Project3
+<p align="center">
+  <img src="https://media.tenor.com/0oMWmMLQ9zMAAAAC/good-news.gif" width="750" height="250">
+</p>
 
-# News Summarizer
+
+# Neural Newsroom News Summarizer
 
 ## Problem Statement
 
 In the contemporary digital landscape, users encounter a significant challenge in efficiently processing and synthesizing news information due to the exponential growth of online content sources. This information overload phenomenon presents a multifaceted problem: it impedes timely consumption of relevant data, obstructs the extraction of salient points from diverse sources, and complicates the formation of a coherent understanding of current events. The heterogeneity of news platforms, coupled with varying degrees of journalistic rigor and potential source biases, further exacerbates the complexity of information assimilation. Additionally, the absence of robust customization algorithms in many news aggregation systems limits users' capacity to filter and prioritize content according to their specific informational requirements.
 
-Key challenges include:
+Key challenges include: (Update with more info)
 
 - Information Overload: Users struggle to process the vast volume of news content, leading to inefficient data consumption and potential oversight of critical information.
 
@@ -19,11 +20,11 @@ Key challenges include:
 
 - Time and Language Constraints: Users face difficulties in rapidly assimilating pertinent information across linguistic boundaries within limited time frames.
 
-## Solution
+## Solution (update at the very end)
 
 The News Summarizer project addresses these challenges through a multi-faceted approach, leveraging advanced technologies and user-centric design. The solution effectively mitigates the issues of information overload, source diversity, customization limitations, and time and language constraints.
 
-Key features implemented:
+Key features implemented:(needs update)
 
 - Multi-Source Aggregation and Summarization: The project utilizes APIs from NewsAPI and MediaStack to aggregate news from diverse sources, then employs Natural Language Processing (NLP) techniques to generate concise summaries. This approach directly tackles information overload by distilling large volumes of news into digestible content.
 
@@ -43,7 +44,7 @@ Key features implemented:
 ## Installation
 
 1. Clone this repository:
-   git clone <input the link to our github project>
+   git clone [Neural Newsroom](https://bit.ly/neural-newsroom)
 cd news-summarizer
 
 2. Install the required packages:
@@ -81,10 +82,6 @@ MEDIASTACK_KEY=your_mediastack_key_here
 - nltk
 - beautifulsoup4
 
-## APIs Used
-
-- [NewsAPI](https://newsapi.org/)
-- [MediaStack](https://mediastack.com/)
 
 ## Limitations
 
@@ -100,7 +97,10 @@ MEDIASTACK_KEY=your_mediastack_key_here
 
 ## Contributing
 
-Contributions, issues, and feature requests are welcome. Feel free to check [issues page](<insert our github link>) if you want to contribute.
+Contributions, issues, and feature requests are welcome. Feel free to check - [Issues](../../issues)
+
+
+if you want to contribute.
 
 ## License
 
@@ -116,14 +116,23 @@ Open the `News_Summarizer.ipynb` file and run all cells.
 - nltk
 - beautifulsoup4
 
-## Contributing
-
-Contributions, issues, and feature requests are welcome. Feel free to check [issues page](https://github.com/yourusername/news-summarizer/issues) if you want to contribute.
-
-
 ## Acknowledgements
 
 - [NewsAPI](https://newsapi.org/) for providing access to diverse news sources
 - [MediaStack](https://mediastack.com/) for their comprehensive news data API
 - [NLTK](https://www.nltk.org/) for natural language processing capabilities
 - [Gradio](https://www.gradio.app/) for the user-friendly interface framework
+- [Bing News Search API](https://www.microsoft.com/en-us/bing/apis) Offers search capabilities for news articles, enriched with rich metadata.
+- [New York Times API](https://developer.nytimes.com/apis) Provides a comprehensive suite of news articles, book reviews, and bestseller lists from The New York Times.
+- [GDELT Project](https://blog.gdeltproject.org/announcing-the-gdelt-context-2-0-api/) Monitors the world's news media, translating it nearly in real-time into structured data.
+- [Currents API](https://currentsapi.services/en/docs/) Provides the latest news published in various blogs, websites, and news outlets.
+- [Event Registry](https://eventregistry.org/) Analyzes news from across the world in real-time, providing comprehensive insights.
+- [Reuters News API](https://www.reuters.com/news-api/) Delivers trusted, timely, and comprehensive news from around the world.
+- [MediaStack API](https://mediastack.com/) Access live news and historical articles from a wide range of sources with a fast and simple API.
+- [ContextualWeb News API](https://rapidapi.com/contextualwebsearch/api/websearch) Fetch timely news articles from thousands of sources globally.
+  
+<img src="https://s36667.pcdn.co/wp-content/uploads/2020/12/News-cycle-GIF-747x400-B.gif" width="1000" height="300">
+
+  
+
+
