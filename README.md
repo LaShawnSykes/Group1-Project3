@@ -43,7 +43,7 @@ Key features implemented:(needs update)
 ## Installation
 
 1. Clone this repository:
-   git clone <input the link to our github project>
+   git clone (https://github.com/LaShawnSykes/Group1-Project3)
 cd news-summarizer
 
 2. Install the required packages:
@@ -81,10 +81,6 @@ MEDIASTACK_KEY=your_mediastack_key_here
 - nltk
 - beautifulsoup4
 
-## APIs Used
-
-- [NewsAPI](https://newsapi.org/)
-- [MediaStack](https://mediastack.com/)
 
 ## Limitations
 
@@ -100,7 +96,7 @@ MEDIASTACK_KEY=your_mediastack_key_here
 
 ## Contributing
 
-Contributions, issues, and feature requests are welcome. Feel free to check [issues page](<insert our github link>) if you want to contribute.
+Contributions, issues, and feature requests are welcome. Feel free to check [issues page]((https://github.com/LaShawnSykes/Group1-Project3) if you want to contribute.
 
 ## License
 
@@ -129,6 +125,7 @@ Open the `News_Summarizer.ipynb` file and run all cells.
 - [Event Registry](https://eventregistry.org/) Analyzes news from across the world in real-time, providing comprehensive insights.
 - [Reuters News API](https://www.reuters.com/news-api/) Delivers trusted, timely, and comprehensive news from around the world.
 - [MediaStack API](https://mediastack.com/) Access live news and historical articles from a wide range of sources with a fast and simple API.
-- [ContextualWeb News API](https://rapidapi.com/contextualwebsearch/api/websearch)) Fetch timely news articles from thousands of sources globally.
+- [ContextualWeb News API](https://rapidapi.com/contextualwebsearch/api/websearch) Fetch timely news articles from thousands of sources globally.
+  
 
 
