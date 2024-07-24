@@ -97,7 +97,10 @@ MEDIASTACK_KEY=your_mediastack_key_here
 
 ## Contributing
 
-Contributions, issues, and feature requests are welcome. Feel free to check [issues page]((https://github.com/LaShawnSykes/Group1-Project3) if you want to contribute.
+Contributions, issues, and feature requests are welcome. Feel free to check - [Issues](../../issues)
+
+
+if you want to contribute.
 
 ## License
 
@@ -121,12 +124,13 @@ Open the `News_Summarizer.ipynb` file and run all cells.
 - [Gradio](https://www.gradio.app/) for the user-friendly interface framework
 - [Bing News Search API](https://www.microsoft.com/en-us/bing/apis) Offers search capabilities for news articles, enriched with rich metadata.
 - [New York Times API](https://developer.nytimes.com/apis) Provides a comprehensive suite of news articles, book reviews, and bestseller lists from The New York Times.
-- [GDELT Project](https://blog.gdeltproject.org/announcing-the-gdelt-context-2-0-api/) Monitors the world's news media, translating it nearly in real-time into     structured data.
+- [GDELT Project](https://blog.gdeltproject.org/announcing-the-gdelt-context-2-0-api/) Monitors the world's news media, translating it nearly in real-time into structured data.
 - [Currents API](https://currentsapi.services/en/docs/) Provides the latest news published in various blogs, websites, and news outlets.
 - [Event Registry](https://eventregistry.org/) Analyzes news from across the world in real-time, providing comprehensive insights.
 - [Reuters News API](https://www.reuters.com/news-api/) Delivers trusted, timely, and comprehensive news from around the world.
 - [MediaStack API](https://mediastack.com/) Access live news and historical articles from a wide range of sources with a fast and simple API.
 - [ContextualWeb News API](https://rapidapi.com/contextualwebsearch/api/websearch) Fetch timely news articles from thousands of sources globally.
+  
 <img src="https://s36667.pcdn.co/wp-content/uploads/2020/12/News-cycle-GIF-747x400-B.gif" width="1000" height="300">
 
   
