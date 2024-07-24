@@ -4,9 +4,7 @@
 </p>
 
 
-# Neural Newsroom
-
-# News Summarizer
+# Neural Newsroom News Summarizer
 
 ## Problem Statement
 
