@@ -1,17 +1,10 @@
-import os
 import requests
-from dotenv import load_dotenv
+import pandas as pd
 from datetime import datetime, timedelta
 import time
-import pandas as pd
+import os
+from dotenv import load_dotenv
 import random
-'''
-key_check 
-newsapi
-
-
-
-'''
 
 def key_check(key_path=None):
     try:
@@ -28,7 +21,7 @@ def key_check(key_path=None):
             },
             'The Guardian': {
                 'env_var': 'GUARDIAN_API_KEY',
-                'test_url': xxg7q0
+                'test_url': 'https://content.guardianapis.com/search?api-key={}'
             },
             'GDELT Project': {
                 'env_var': 'GDELT_API_KEY',
@@ -71,82 +64,14 @@ def key_check(key_path=None):
         print('All keys loaded and authenticated correctly')
         return True
 
-def newsapi(pages):
-    # Your API key
-    api_key = os.getenv('NEWS_API_KEY')
-
-    # Set up date range for this month
-    end_date = datetime.now()
-    start_date = end_date.replace(day=1)  # First day of the current month
-
-    # Convert dates to required format (YYYY-MM-DD)
-    from_date = start_date.strftime("%Y-%m-%d")
-    to_date = end_date.strftime("%Y-%m-%d")
-
-    # Construct the base URL
-    url = "https://newsapi.org/v2/everything"
-
-    # Parameters for the API call
-    params = {
-        "apiKey": api_key,
-        "from": from_date,
-        "to": to_date,
-        "language": "en",
-        "sortBy": "publishedAt",
-        "pageSize": 100,  # maximum allowed per request
-        "page": pages,
-        "q":"weather"
-    }
-
-    all_articles = []
-    max_pages = pages  # Maximum number of pages to fetch
-
-    for page in range(202, max_pages + 1):
-        params["page"] = page
-        
-        try:
-            response = requests.get(url, params=params)
-            print (response.url)
-            if response.status_code == 200:
-                data = response.json()
-                articles = data["articles"]
-                
-                if not articles:
-                    print(f"No more articles found after page {page - 1}")
-                    break
-                
-                all_articles.extend(articles)
-                print(f"Fetched page {page}, total articles: {len(all_articles)}")
-                
-                # Sleep for a short time to avoid hitting rate limits
-                time.sleep(0.5)
-            else:
-                print(f"Error on page {page}: {response.status_code}")
-                break
-        
-        except Exception as e:
-            print(f"An error occurred on page {page}: {str(e)}")
-            break
-
-        print(f"Total articles fetched: {len(all_articles)}")
-        # Create a DataFrame from the fetched articles
-        df = pd.DataFrame(all_articles)
-        # Display the first few rows and basic info about the DataFrame
-        print(df.head())
-        print(df.info())
-
-        # Optionally, save the DataFrame to a CSV file
-        df.to_csv('.\\resources\\news_articles_1.csv', index=False)
-        print("DataFrame saved to 'news_articles.csv'")
-
-def make_request(url, params, retries=5, backoff_factor=5):
+def make_request(url, params, retries=3, backoff_factor=5):
     for i in range(retries):
         try:
             response = requests.get(url, params=params)
             if response.status_code == 200:
                 return response
             elif response.status_code == 429:
-                wait_time = (backoff_factor ** i) + random.random()
+                wait_time = (backoff_factor ** i) + (random.random() * 0.1)
                 print(f"Rate limit exceeded. Waiting for {wait_time:.2f} seconds.")
                 time.sleep(wait_time)
             else:
@@ -156,60 +81,63 @@ def make_request(url, params, retries=5, backoff_factor=5):
             print(f"Request failed: {str(e)}")
     return None
 
-def nytapi():
-    api_key = os.getenv('NYT_API_KEY')
-    end_date = datetime.now()
-    start_date = end_date - timedelta(days=30)
+def currentapi():
+    # Your Currents API Key
+    api_key = os.getenv('CURRENTS_API_KEY')
 
-    begin_date = start_date.strftime("%Y%m%d")
-    end_date = end_date.strftime("%Y%m%d")
+    # Base URL for Currents API
+    base_url = "https://api.currentsapi.services/v1/latest-news"
 
-    base_url = "https://api.nytimes.com/svc/search/v2/articlesearch.json"
-
+    # Parameters for the API call
     params = {
-        "api-key": api_key,
-        "begin_date": begin_date,
-        "end_date": end_date,
-        "sort": "newest",
-        "page": 0
+        "apiKey": api_key,
+        "language": "en",
+        "page_number": 1
     }
 
     all_articles = []
-    total_pages = 1
-    current_page = 0
+    max_pages = 1000  # Set a maximum number of pages to fetch
+    current_page = 1
 
-    while current_page < total_pages:
+ 
+    while current_page <= max_pages:
         response = make_request(base_url, params)
         
         if response:
             data = response.json()
             
-            if current_page == 0:
-                total_pages = min(data['response']['meta']['hits'] // 10 + 1, 2000)
-                print(f"Total pages to fetch: {total_pages}")
-            
-            articles = data['response']['docs']
+            articles = data['news']
             all_articles.extend(articles)
-            print(f"Fetched page {current_page + 1}, total articles: {len(all_articles)}")
+            print(f"Fetched page {current_page}, articles on this page: {len(articles)}")
+            print(f"Total articles fetched so far: {len(all_articles)}")
             
+            # Check if we've reached the end of available articles
+            if len(articles) == 0:
+                print("No more articles available.")
+                break
+            
+            # Move to next page
             current_page += 1
-            params['page'] = current_page
+            params['page_number'] = current_page
             
-            time.sleep(6)  # Base wait time between requests
+            # Sleep to respect rate limits
+            time.sleep(2)
         else:
-            print(f"Failed to fetch page {current_page + 1}")
+            print(f"Failed to fetch page {current_page}")
             break
 
     print(f"Total articles fetched: {len(all_articles)}")
 
+    # Create a DataFrame from the fetched articles
     df = pd.DataFrame(all_articles)
 
+    # Display the first few rows and basic info about the DataFrame
     print(df.head())
     print(df.info())
 
-    df.to_csv('.\\resources\\nyt_articles.csv', index=False)
-    print("DataFrame saved to 'nyt_articles.csv'")
-
+    # Optionally, save the DataFrame to a CSV file
+    df.to_csv('.\\resources\\currents_articles.csv', index=False)
+    print("DataFrame saved to 'currents_articles.csv'")
     return None
 
 if key_check("C:\SRC\.key.env"):
@@ -217,4 +145,4 @@ if key_check("C:\SRC\.key.env"):
 else:
     print("There was an issue with one or more API keys.")
 # newsapi(5)
-nytapi()
+currentapi()
