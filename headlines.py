@@ -1,6 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from guardian_ml_6 import predict_article_type
 from fpdf import FPDF
+from tensorflow.keras.models import load_model
+import pandas as pd 
 import tensorflow as tf
 import pickle
 import openai
@@ -10,27 +12,47 @@ import time
 import random
 
 def load_model_and_dependencies():
-    # Load the pickled results
-    with open('./models/chosen_fold_results.pickle', 'rb') as handle:
-        fold_results = pickle.load(handle)
-    
-    # Extract the components
-    model = fold_results['model']
-    tokenizer = fold_results['tokenizer']
-    label_encoder = fold_results['label_encoder']
-    
-    return model, tokenizer, label_encoder
+    try:
+        # Load the pickled results
+        with open('./models/chosen_fold_results.pickle', 'rb') as handle:
+            fold_results = pickle.load(handle)
+        
+        # Extract the components
+        model = fold_results['model']
+        tokenizer = fold_results['tokenizer']
+        label_encoder = fold_results['label_encoder']
+        
+        # If the model is a path, load it
+        if isinstance(model, str):
+            model = load_model(model)
+        
+        return model, tokenizer, label_encoder
+    except Exception as e:
+        print(f"Error loading model: {str(e)}")
+        # If loading fails, try to load components separately
+        try:
+            model = load_model('./models/model.h5')
+            with open('./models/tokenizer.pickle', 'rb') as handle:
+                tokenizer = pickle.load(handle)
+            with open('./models/label_encoder.pickle', 'rb') as handle:
+                label_encoder = pickle.load(handle)
+            return model, tokenizer, label_encoder
+        except Exception as e:
+            print(f"Error loading separate components: {str(e)}")
+            raise
 
 def fetch_yesterday_articles():
     api_key = os.getenv('GUARDIAN_API_KEY')
-    end_date = datetime.now()
-    start_date = end_date - timedelta(days=1200)  # Fetch up to 1200 days of data
+    end_date = date.today()
+    start_date = end_date - timedelta(days=1)  # Fetch only yesterday's articles
     from_date = start_date.strftime("%Y-%m-%d")
     to_date = end_date.strftime("%Y-%m-%d")
     base_url = "https://content.guardianapis.com/search"
     
     sections = ['politics', 'business', 'technology', 'sport', 'culture', 'environment', 'science', 'world']
     all_articles = []
+
+    print(from_date, "  ", to_date)
 
     def fetch_with_retry(params, max_retries=10, initial_wait=10):
         for attempt in range(max_retries):
@@ -42,6 +64,9 @@ def fetch_yesterday_articles():
                     wait_time = min(initial_wait * (2 ** attempt), 60) + random.uniform(0, 1)
                     print(f"Rate limit exceeded. Waiting for {wait_time:.2f} seconds.")
                     time.sleep(wait_time)
+                elif response.status_code == 400:
+                    print ("end of list")
+                    return None
                 else:
                     response.raise_for_status()
             except requests.RequestException as e:
@@ -94,7 +119,7 @@ def fetch_yesterday_articles():
     print("DataFrame saved to 'guardian_articles_cleaned.csv'")
     print("Columns in the saved CSV:", df.columns.tolist())
     # Modify guardianapi() to fetch only yesterday's articles
-    yesterday = datetime.date.today() - datetime.timedelta(days=1)
+    # yesterday = datetime.date.today() - datetime.timedelta(days=1)
     # ... (implement the rest of the function)
 '''
 def load_model_and_dependencies():
