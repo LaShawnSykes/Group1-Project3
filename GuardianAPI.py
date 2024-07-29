@@ -1,27 +1,5 @@
-from datetime import datetime, timedelta
-from guardian_ml_6 import predict_article_type
-from fpdf import FPDF
-import tensorflow as tf
-import pickle
-import openai
-import os
-import requests
-import time
-import random
 
-def load_model_and_dependencies():
-    # Load the pickled results
-    with open('./models/chosen_fold_results.pickle', 'rb') as handle:
-        fold_results = pickle.load(handle)
-    
-    # Extract the components
-    model = fold_results['model']
-    tokenizer = fold_results['tokenizer']
-    label_encoder = fold_results['label_encoder']
-    
-    return model, tokenizer, label_encoder
-
-def fetch_yesterday_articles():
+def guardianapi():
     api_key = os.getenv('GUARDIAN_API_KEY')
     end_date = datetime.now()
     start_date = end_date - timedelta(days=1200)  # Fetch up to 1200 days of data
@@ -92,55 +70,5 @@ def fetch_yesterday_articles():
     df.to_csv('.\\resources\\guardian_articles_cleaned.csv', index=False)
     print(f"Total articles fetched: {len(all_articles)}")
     print("DataFrame saved to 'guardian_articles_cleaned.csv'")
-    print("Columns in the saved CSV:", df.columns.tolist())
-    # Modify guardianapi() to fetch only yesterday's articles
-    yesterday = datetime.date.today() - datetime.timedelta(days=1)
-    # ... (implement the rest of the function)
-'''
-def load_model_and_dependencies():
-    model = tf.keras.models.load_model('.\\resources\\guardian_deep_learning_model.h5')
-    with open('.\\resources\\guardian_tokenizer.pickle', 'rb') as handle:
-        tokenizer = pickle.load(handle)
-    with open('.\\resources\\guardian_label_encoder.pickle', 'rb') as handle:
-        label_encoder = pickle.load(handle)
-    return model, tokenizer, label_encoder
-'''
-def classify_articles(articles, model, tokenizer, label_encoder):
-    classified_articles = []
-    for article in articles:
-        category = predict_article_type(article['title'], article['body'], model, tokenizer, label_encoder)
-        classified_articles.append({**article, 'category': category})
-    return classified_articles
-
-def summarize_by_category(classified_articles):
-    summaries = {}
-    for article in classified_articles:
-        category = article['category']
-        if category not in summaries:
-            summaries[category] = []
-        summaries[category].append(f"{article['title']}: {article['body'][:100]}...")
-    return summaries
-
-def generate_newspaper_pdf(summaries):
-    openai.api_key = 'your-openai-api-key'
-    prompt = f"Create a newspaper front page layout with the following summaries:\n\n{summaries}"
-    response = openai.Completion.create(engine="text-davinci-002", prompt=prompt, max_tokens=1000)
-    
-    layout = response.choices[0].text
-    
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, layout)
-    pdf.output("newspaper_front_page.pdf")
-
-def main():
-    # load_model_and_dependencies()
-    articles = fetch_yesterday_articles()
-    model, tokenizer, label_encoder = load_model_and_dependencies()
-    classified_articles = classify_articles(articles, model, tokenizer, label_encoder)
-    summaries = summarize_by_category(classified_articles)
-    generate_newspaper_pdf(summaries)
-
-if __name__ == "__main__":
-    main()
+    print("Columns in the saved CSV:
+          
