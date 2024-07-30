@@ -11,6 +11,11 @@ import requests
 import time
 import random
 
+
+
+
+import tensorflow as tf
+
 def load_model_and_dependencies():
     try:
         # Load the pickled results
@@ -18,20 +23,21 @@ def load_model_and_dependencies():
             fold_results = pickle.load(handle)
         
         # Extract the components
-        model = fold_results['model']
+        model_path = fold_results['model']  # Assuming this is now a path to the saved model
         tokenizer = fold_results['tokenizer']
         label_encoder = fold_results['label_encoder']
         
-        # If the model is a path, load it
-        if isinstance(model, str):
-            model = load_model(model)
+        # Load the model with experimental_io_device option
+        options = tf.saved_model.LoadOptions(experimental_io_device='/job:localhost')
+        model = tf.saved_model.load(model_path, options=options)
         
         return model, tokenizer, label_encoder
     except Exception as e:
         print(f"Error loading model: {str(e)}")
         # If loading fails, try to load components separately
         try:
-            model = load_model('./models/model.h5')
+            options = tf.saved_model.LoadOptions(experimental_io_device='/job:localhost')
+            model = tf.saved_model.load('./models/saved_model', options=options)
             with open('./models/tokenizer.pickle', 'rb') as handle:
                 tokenizer = pickle.load(handle)
             with open('./models/label_encoder.pickle', 'rb') as handle:
