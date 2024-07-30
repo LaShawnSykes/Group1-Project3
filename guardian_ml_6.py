@@ -112,6 +112,7 @@ def guardianapi():
     print(f"Total articles fetched: {len(all_articles)}")
     print("DataFrame saved to 'guardian_articles_cleaned.csv'")
     print("Columns in the saved CSV:", df.columns.tolist())
+    
 
 def preprocess_text(text):
     if not isinstance(text, str):
@@ -143,11 +144,11 @@ def safe_json_loads(x):
             return {}
 
 def calculate_category_scores(y_true, y_pred, label_encoder):
-    report = classification_report(y_true, y_pred, target_names=label_encoder.classes_, output_dict=True)
-    category_scores = {category: report[category]['f1-score'] for category in label_encoder.classes_}
+    unique_classes = np.unique(np.concatenate((y_true, y_pred)))
+    target_names = [label_encoder.classes_[i] for i in unique_classes if i < len(label_encoder.classes_)]
+    report = classification_report(y_true, y_pred, target_names=target_names, output_dict=True)
+    category_scores = {category: report[category]['f1-score'] for category in target_names}
     return category_scores
-
-
 
 def lr_schedule(epoch):
     if epoch < 10:
@@ -177,24 +178,24 @@ class AdaptiveClassWeightCallback(Callback):
                 print(f"\nAdjusting class weights: {self.class_weight_dict}")
                 self.wait = 0
 
-def build_model_tunable(hp):
-    max_words = 100000
-    max_len = 300
+def build_model_tunable(hp, num_classes):
+    max_words = 10000
+    max_len = 200
     num_classes = hp.Choice('num_classes', values=[8])  # Assuming 8 categories
     
     text_input = Input(shape=(max_len,))
-    embedding = Embedding(max_words, hp.Int('embedding_dim', min_value=200, max_value=400, step=50), input_length=max_len)(text_input)
+    embedding = Embedding(max_words, hp.Int('embedding_dim', min_value=100, max_value=200, step=50), input_length=max_len)(text_input)
     embedding = SpatialDropout1D(hp.Float('spatial_dropout', min_value=0.1, max_value=0.3, step=0.1))(embedding)
     
     # CNN layers
-    conv1 = Conv1D(hp.Int('conv_filters', min_value=128, max_value=512, step=64), 
+    conv1 = Conv1D(hp.Int('conv_filters', min_value=64, max_value=256, step=64), 
                    hp.Int('conv_kernel_size', min_value=3, max_value=7, step=2), 
                    activation='relu', kernel_regularizer=l2(hp.Float('conv_l2', min_value=1e-5, max_value=1e-3, sampling='log')))(embedding)
     conv1 = BatchNormalization()(conv1)
     pool1 = GlobalMaxPooling1D()(conv1)
     
     # LSTM layers
-    lstm = Bidirectional(LSTM(hp.Int('lstm_units', min_value=64, max_value=512, step=64), 
+    lstm = Bidirectional(LSTM(hp.Int('lstm_units', min_value=32, max_value=256, step=32), 
                               return_sequences=True, 
                               kernel_regularizer=l2(hp.Float('lstm_l2', min_value=1e-5, max_value=1e-3, sampling='log'))))(embedding)
     lstm = BatchNormalization()(lstm)
@@ -265,6 +266,7 @@ def build_model(max_words, max_len, additional_features_shape, num_classes):
 
 def train_model(csv_path):
     df = pd.read_csv(csv_path)
+    df = df.sample(frac=0.5, random_state=42)  
     print("Columns in the CSV file:", df.columns.tolist())
 
     title_column = 'webTitle' if 'webTitle' in df.columns else df.columns[0]
@@ -290,7 +292,8 @@ def train_model(csv_path):
     # Encode labels
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
-    y_categorical = to_categorical(y_encoded)
+    num_classes = len(np.unique(y_encoded))
+    y_categorical = to_categorical(y_encoded, num_classes=num_classes)
 
     # Calculate class weights
     class_weights = compute_class_weight('balanced', classes=np.unique(y_encoded), y=y_encoded)
@@ -300,8 +303,8 @@ def train_model(csv_path):
     n_splits = 5
     skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
 
-    max_words = 100000
-    max_len = 300
+    max_words = 10000
+    max_len = 200
 
     fold_scores = []
     
@@ -323,12 +326,12 @@ def train_model(csv_path):
 
         # Hyperparameter tuning
         tuner = RandomSearch(
-            build_model_tunable,
-            objective='val_accuracy',
-            max_trials=10,
-            executions_per_trial=2,
-            directory=f'tuning_results_fold_{fold}',
-            project_name='guardian_article_classification'
+        lambda hp: build_model_tunable(hp, num_classes),
+        objective='val_accuracy',
+        max_trials=5,
+        executions_per_trial=1,
+        directory=f'tuning_results_fold_{fold}',
+        project_name='guardian_article_classification'
         )
 
         tuner.search([X_train_pad, X_add_train], y_train,
@@ -348,7 +351,7 @@ def train_model(csv_path):
         history = best_model.fit(
             [X_train_pad, X_add_train], y_train,
             validation_data=([X_val_pad, X_add_val], y_val),
-            epochs=50,
+            epochs=30,
             batch_size=32,
             class_weight=class_weight_dict,
             callbacks=[early_stopping, model_checkpoint, lr_scheduler, adaptive_class_weight]
@@ -427,16 +430,20 @@ def predict_article_type(title, body, model, tokenizer, label_encoder):
     
     # Tokenize and pad the text
     text_seq = tokenizer.texts_to_sequences([processed_text])
-    text_pad = pad_sequences(text_seq, maxlen=300)  # Make sure this matches the max_len in train_model
+    text_pad = pad_sequences(text_seq, maxlen=2)  # Make sure this matches the max_len in train_model
     
     # Prepare additional features
     add_features = np.array([list(additional_features.values())])
     
     # Make prediction
     prediction = model.predict([text_pad, add_features])
-    predicted_class = label_encoder.inverse_transform([np.argmax(prediction)])
+    predicted_class_index = np.argmax(prediction)
+    if predicted_class_index < len(label_encoder.classes_):
+        predicted_class = label_encoder.classes_[predicted_class_index]
+    else:
+        predicted_class = "Unknown"
     
-    return predicted_class[0]
+    return predicted_class # may need []
 
 if __name__ == "__main__":
     if os.getenv("GUARDIAN_API_KEY"):
