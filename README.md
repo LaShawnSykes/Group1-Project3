@@ -21,7 +21,7 @@ Before you begin, ensure you have met the following requirements:
 
 ## Installation
 1. Clone the repository:
-git clone https://github.com/yourusername/neural-newsroom.git
+git clone (https://github.com/LaShawnSykes/Neural-Newsroom_G2_P3.git)
 cd neural-newsroom
 
 2. Install the required packages:
