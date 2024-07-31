@@ -40,6 +40,15 @@ nltk.download('averaged_perceptron_tagger', quiet=True)
 
 load_dotenv('C:\\SRC\\.key.env')
 
+
+def ensure_resources_dir():
+    resources_dir = '.\\resources'
+    if not os.path.exists(resources_dir):
+        os.makedirs(resources_dir)
+        print(f"Created directory: {resources_dir}")
+    else:
+        print(f"Directory already exists: {resources_dir}")
+
 def guardianapi():
     api_key = os.getenv('GUARDIAN_API_KEY')
     end_date = datetime.now()
@@ -75,7 +84,7 @@ def guardianapi():
     for section in sections:
         page = 1
         section_articles = []
-        while len(section_articles) < 2000:
+        while len(section_articles) < 1000:
             params = {
                 "api-key": api_key,
                 "from-date": from_date,
@@ -98,16 +107,17 @@ def guardianapi():
             for article in articles:
                 article['category'] = section
             section_articles.extend(articles)
-            print(f"Fetched page {page} from {section}, total articles: {len(section_articles)}")
+            print(f"Fetched page {page} from {section}, \ntotal articles: {len(section_articles)}")
             page += 1
 
             # Random delay between requests
             time.sleep(random.uniform(1, 3))
 
         all_articles.extend(section_articles[:2000])  # Ensure we only take 2000 articles per section
-        print(f"Completed fetching articles for {section}. Total articles: {len(all_articles)}")
+        print(f"Completed fetching articles for {section}. \nTotal articles: {len(all_articles)}")
 
     df = pd.DataFrame(all_articles)
+    ensure_resources_dir()
     df.to_csv('.\\resources\\guardian_articles_cleaned.csv', index=False)
     print(f"Total articles fetched: {len(all_articles)}")
     print("DataFrame saved to 'guardian_articles_cleaned.csv'")
@@ -448,7 +458,7 @@ def predict_article_type(title, body, model, tokenizer, label_encoder):
 if __name__ == "__main__":
     if os.getenv("GUARDIAN_API_KEY"):
         print("Guardian API key is valid and working.")
-        # guardianapi()
+        guardianapi()
         model, tokenizer, label_encoder, category_scores = train_model('.\\resources\\guardian_articles_cleaned.csv')
 
         print("\nFinal Category F1-scores:")

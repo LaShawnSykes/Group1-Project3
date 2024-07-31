@@ -10,17 +10,12 @@ import os
 import requests
 import time
 import random
-
-
-
-
 import tensorflow as tf
 
 def load_model_and_dependencies():
     try:
         # Load the pickled results
-        with open('./models/chosen_fold_results.pickle', 'rb') as handle:
-            fold_results = pickle.load(handle)
+        open('./models/guardian_article_classifier_final.h5', 'rb')
         
         # Extract the components
         model_path = fold_results['model']  # Assuming this is now a path to the saved model
