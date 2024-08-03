@@ -34,7 +34,7 @@ GUARDIAN_API_KEY=your_api_key_here
 1. Run the Jupyter notebook:
 jupyter notebook
 
-2. Open the `Neural_Newsroom.ipynb` notebook and run all cells.
+2. Open the `NeuralNewInterface.ipynb` notebook and run all cells.
 
 3. The Gradio interface will launch, allowing you to enter a topic, choose language and sorting options, and specify the number of articles to fetch.
 
@@ -90,8 +90,8 @@ We experimented with several model architectures, gradually refining our approac
 - Developed a Gradio-powered interface for easy interaction with the system
 
 ## File Descriptions
-- `Neural_Newsroom.ipynb`: Main Jupyter notebook containing all the code
-- `guardian_api_fetch.py`: Script for fetching articles from The Guardian API
+- `NeuralNewsroomModel.ipynb`: Jupyter notebook containing the model code
+- `NeuralNewsInterface.py`: Script for fetching articles from The Guardian API
 - `preprocess.py`: Data preprocessing functions
 - `model.py`: CNN-LSTM hybrid model architecture
 - `train.py`: Script for training the model
